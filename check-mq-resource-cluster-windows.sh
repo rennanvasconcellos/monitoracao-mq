@@ -15,7 +15,7 @@ cp servidores.txt servidores.txt.bkp
 
 for SERVIDOR in $(cat servidores.txt)
                         do
-                        STATUS_WEBCONSOLE=$(curl --connect-timeout 5 -s -k -i -u mqreader:mqreader "https://$SERVIDOR:9443/ibmmq/console" | grep HTTP | awk '{print $2}')
+                        STATUS_WEBCONSOLE=$(curl --connect-timeout 5 -s -k -i -u USUARIO:SENHA "https://$SERVIDOR:9443/ibmmq/console" | grep HTTP | awk '{print $2}')
 
 			if [ -z $STATUS_WEBCONSOLE ]
 				then
@@ -44,7 +44,7 @@ for SERVIDORES in $(cat servidores.txt)
         do
                 for QMGR in $(cat todos-qmgrs.txt)
                         do
-                        STATUS_QMGR=$(curl --connect-timeout 5 -s -k -i -u mqreader:mqreader "https://$SERVIDORES:9443/ibmmq/rest/v1/admin/qmgr/$QMGR/queue/SYSTEM.ADMIN.COMMAND.QUEUE?status=*" | grep HTTP | awk '{print $2}')
+                        STATUS_QMGR=$(curl --connect-timeout 5 -s -k -i -u USUARIO:SENHA "https://$SERVIDORES:9443/ibmmq/rest/v1/admin/qmgr/$QMGR/queue/SYSTEM.ADMIN.COMMAND.QUEUE?status=*" | grep HTTP | awk '{print $2}')
 			echo  "$QMGR $STATUS_QMGR" | sort | uniq >> lista-situacao-qmgrs.txt
 			SUCESSO=$(cat lista-situacao-qmgrs.txt | awk '{print $1 " " $2}' | grep "$QMGR" | grep "200" >> sucesso.txt)
 			FALHA=$(cat lista-situacao-qmgrs.txt | awk '{print $1 " " $2}' | grep "$QMGR" | grep -E "404|503" >> falha.txt)
